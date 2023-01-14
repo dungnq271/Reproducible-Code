@@ -5,6 +5,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import numpy as np
 import cv2
 from PIL import Image
+from icecream import ic
 
 
 def load_image(path_to_image: str, backend: str = 'cv2', toRGB: bool = True) -> np.ndarray:
@@ -26,10 +27,10 @@ def load_image(path_to_image: str, backend: str = 'cv2', toRGB: bool = True) -> 
 
 def plot_multiple_images(
     paths_to_images: List,
-    path2label: dict,
-    fig_size:int, 
-    grid_size: int, 
-    size: int
+    path2label: dict = None,
+    fig_size:int = None, 
+    grid_size: int = None, 
+    size: int = None
     ) -> None:
     """Plotting a grid of random images from specified paths
 
@@ -47,13 +48,16 @@ def plot_multiple_images(
                  nrows_ncols=(grid_size, grid_size),  # creates 2x2 grid of axes
                  axes_pad=0.3,  # pad between axes in inch.
                  )
-    labels = [path2label[p] for p in image_paths_to_plot]
+    if path2label:
+        labels = [path2label[p] for p in image_paths_to_plot]
 
-    for ax, path, label in zip(grid, image_paths_to_plot, labels):
+    for i, (ax, path) in enumerate(zip(grid, image_paths_to_plot)):
+        ic(path)
         image = load_image(path)
         image = cv2.resize(image, (size, size))
         ax.imshow(image)
-        ax.set_title(label)
+        if path2label:
+            ax.set_title(labels[i])
 
     plt.show()
     
