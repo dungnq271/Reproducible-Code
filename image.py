@@ -30,7 +30,8 @@ def plot_multiple_images(
     path2label: dict = None,
     fig_size:int = None, 
     grid_size: int = None, 
-    size: int = None
+    size: int = None,
+    axes_pad: float = 0.3,
     ) -> None:
     """Plotting a grid of random images from specified paths
 
@@ -40,19 +41,19 @@ def plot_multiple_images(
         fig_size (int): size of figure
         grid_size (int): grid size of images
         size (int): size of images after resizing for plotting
+        axes_pad (float): # pad between axes in inch
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
     number_of_images = grid_size**2
     image_paths_to_plot = random.sample(paths_to_images, number_of_images)
     grid = ImageGrid(fig, 111,  # similar to subplot(111)
                  nrows_ncols=(grid_size, grid_size),  # creates 2x2 grid of axes
-                 axes_pad=0.3,  # pad between axes in inch.
+                 axes_pad=axes_pad,  # pad between axes in inch.
                  )
     if path2label:
         labels = [path2label[p] for p in image_paths_to_plot]
 
     for i, (ax, path) in enumerate(zip(grid, image_paths_to_plot)):
-        ic(path)
         image = load_image(path)
         image = cv2.resize(image, (size, size))
         ax.imshow(image)

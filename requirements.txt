@@ -1,0 +1,10 @@
+torch 
+torchvision
+pytorch-lightning
+albumentations
+opencv-python
+tensorboard
+pandas
+matplotlib
+icecream
+mypy
