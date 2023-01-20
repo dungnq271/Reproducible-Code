@@ -4,7 +4,6 @@ import threading
 import queue as q
 
 import numpy as np
-import pandas as pd
 import cv2
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -82,7 +81,7 @@ class GenericDataset(Dataset):
         self.transform = transform
         
     def __len__(self):
-        return len(self.images)
+        return len(self.image_paths)
 
     def __getitem__(self, index):
         image_fname = self.image_paths[index]
