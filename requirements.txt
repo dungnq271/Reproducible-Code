@@ -1,10 +1,12 @@
 torch 
 torchvision
 pytorch-lightning
+torchsummary
 albumentations
 opencv-python
 tensorboard
 pandas
 matplotlib
 icecream
+scikit-learn
 
