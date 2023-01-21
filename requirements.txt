@@ -1,6 +1,7 @@
 torch 
 torchvision
 pytorch-lightning
+torchsummary
 albumentations
 opencv-python
 tensorboard
