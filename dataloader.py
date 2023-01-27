@@ -1,4 +1,4 @@
-from image import load_image
+from .image import load_image
 from typing import Any, Tuple, Optional, Union, List
 import threading
 import queue as q
