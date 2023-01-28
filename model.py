@@ -1,7 +1,5 @@
 from icecream import ic
 
-from torchsummary import summary
-
 def freeze(model, idx_to_unfreeze_from_last, device):
     full_layers = list(model.named_children())
     list_layers = full_layers[-idx_to_unfreeze_from_last:]
