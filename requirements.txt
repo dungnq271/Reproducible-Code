@@ -7,6 +7,6 @@ opencv-python
 tensorboard
 pandas
 matplotlib
-icecream
 scikit-learn
-
+icecream
+python-box
