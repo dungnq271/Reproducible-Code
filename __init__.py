@@ -1,5 +1,5 @@
 from .image import *
 from .dataloader import *
-from .transforms import *
+from .augment import *
 from .experiment import *
 from .model import *

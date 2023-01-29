@@ -29,3 +29,28 @@ clf_val_transform = A.Compose([
     ),
     ToTensorV2()
 ])
+
+
+def get_default_transforms():
+    transform = {
+        "train":  A.Compose([
+            A.RandomCrop(width=512, height=512),
+            A.HorizontalFlip(p=0.5),
+            A.RandomBrightnessContrast(p=0.2),
+            A.GaussNoise(), 
+            A.Blur(blur_limit=3),
+            A.Normalize(
+                mean=stats["mean"],
+                std=stats["std"]
+            ),
+            ToTensorV2()
+        ]),
+        "val": A.Compose([
+            A.Normalize(
+                mean=stats["mean"],
+                std=stats["std"]
+            ),
+            ToTensorV2()
+        ])
+    }
+    return transform
