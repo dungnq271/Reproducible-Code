@@ -1,67 +1,62 @@
-import matplotlib.pyplot as plt
-from typing import List
-import random
-from mpl_toolkits.axes_grid1 import ImageGrid
+import base64
+from io import BytesIO
+
 import numpy as np
 import cv2
 from PIL import Image
 from icecream import ic
 
 
-def load_image(path_to_image: str, backend: str = 'cv2', toRGB: bool = True) -> np.ndarray:
+def load_image(
+    path_to_image: str, backend: str = "pillow", toRGB: bool = True
+) -> np.ndarray:
     """Loading image from specied path
 
     Args:
         path_to_image (str): absolute paths to images
         toRGB (bool, optional): _description_. Defaults to True.
+    
+    Returns:
+        (np.ndarray): output image
     """
-    if backend == 'cv2':
+    if backend == "cv2":
         image = cv2.imread(path_to_image)
         if toRGB:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    elif backend == 'pillow':
+    elif backend == "pillow":
         image = np.array(Image.open(path_to_image))
-        
-    return image
-    
 
-def plot_multiple_images(
-    paths_to_images: List,
-    path2label: dict = None,
-    fig_size:int = None, 
-    grid_size: int = None, 
-    size: int = None,
-    axes_pad: float = 0.3,
-    ) -> None:
-    """Plotting a grid of random images from specified paths
+    return image
+
+
+def base64_to_image(base64_string: str) -> Image:
+    """Convert base64 string to image
 
     Args:
-        paths_to_images (List): list of absolute paths to images
-        path2label (dict): mapping from path of images to labels
-        fig_size (int): size of figure
-        grid_size (int): grid size of images
-        size (int): size of images after resizing for plotting
-        axes_pad (float): # pad between axes in inch
+       base64_string (str): input base64 string
+    
+    Returns:
+       (PIL.Image): output image
     """
-    fig = plt.figure(figsize=(fig_size, fig_size))
-    number_of_images = grid_size**2
-    image_paths_to_plot = random.sample(paths_to_images, number_of_images)
-    grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                 nrows_ncols=(grid_size, grid_size),  # creates 2x2 grid of axes
-                 axes_pad=axes_pad,  # pad between axes in inch.
-                 )
-    if path2label:
-        labels = [path2label[p] for p in image_paths_to_plot]
+    # Decode the Base64 string to bytes
+    image_bytes = base64.b64decode(base64_string)
 
-    for i, (ax, path) in enumerate(zip(grid, image_paths_to_plot)):
-        image = load_image(path)
-        image = cv2.resize(image, (size, size))
-        ax.imshow(image)
-        if path2label:
-            ax.set_title(labels[i])
+    # Create an Image object from the bytes
+    image = Image.open(BytesIO(image_bytes))
 
-    plt.show()
-    
+    return image
 
-    
-    
+
+def image_to_base64(image: Image) -> str:
+    """Convert image to base64 string
+
+    Args:
+       (PIL.Image): output image
+
+    Returns:
+       (str): input base64 string
+    """
+    image_bytes = BytesIO()
+    image.save(image_bytes, format="JPEG")
+    base64_image = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
+    return base64_image
