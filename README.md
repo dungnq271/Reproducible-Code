@@ -3,5 +3,5 @@ Some utilities code i develop to not have to write from scratch again when doing
 
 ## Set default Python path:
 ```
-$ export PYTHONPATH=PATH/TO/CLONED_FOLDER
+$ export PYTHONPATH={PATH/TO/CLONED_FOLDER}/tools
 ```
