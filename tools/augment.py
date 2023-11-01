@@ -9,48 +9,38 @@ dir_path = osp.dirname(osp.realpath(__file__))
 f = open(osp.join(dir_path, "data_stats.json"))
 stats = json.load(f)
 
-clf_train_transform = A.Compose([
-    A.RandomCrop(width=512, height=512),
-    A.HorizontalFlip(p=0.5),
-    A.RandomBrightnessContrast(p=0.2),
-    A.GaussNoise(), 
-    A.Blur(blur_limit=3),
-    A.Normalize(
-        mean=stats["mean"],
-        std=stats["std"]
-    ),
-    ToTensorV2()
-])
+clf_train_transform = A.Compose(
+    [
+        A.RandomCrop(width=512, height=512),
+        A.HorizontalFlip(p=0.5),
+        A.RandomBrightnessContrast(p=0.2),
+        A.GaussNoise(),
+        A.Blur(blur_limit=3),
+        A.Normalize(mean=stats["mean"], std=stats["std"]),
+        ToTensorV2(),
+    ]
+)
 
-clf_val_transform = A.Compose([
-    A.Normalize(
-        mean=stats["mean"],
-        std=stats["std"]
-    ),
-    ToTensorV2()
-])
+clf_val_transform = A.Compose(
+    [A.Normalize(mean=stats["mean"], std=stats["std"]), ToTensorV2()]
+)
 
 
 def get_default_transforms():
     transform = {
-        "train":  A.Compose([
-            A.RandomCrop(width=512, height=512),
-            A.HorizontalFlip(p=0.5),
-            A.RandomBrightnessContrast(p=0.2),
-            A.GaussNoise(), 
-            A.Blur(blur_limit=3),
-            A.Normalize(
-                mean=stats["mean"],
-                std=stats["std"]
-            ),
-            ToTensorV2()
-        ]),
-        "val": A.Compose([
-            A.Normalize(
-                mean=stats["mean"],
-                std=stats["std"]
-            ),
-            ToTensorV2()
-        ])
+        "train": A.Compose(
+            [
+                A.RandomCrop(width=512, height=512),
+                A.HorizontalFlip(p=0.5),
+                A.RandomBrightnessContrast(p=0.2),
+                A.GaussNoise(),
+                A.Blur(blur_limit=3),
+                A.Normalize(mean=stats["mean"], std=stats["std"]),
+                ToTensorV2(),
+            ]
+        ),
+        "val": A.Compose(
+            [A.Normalize(mean=stats["mean"], std=stats["std"]), ToTensorV2()]
+        ),
     }
     return transform

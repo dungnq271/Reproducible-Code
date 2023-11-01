@@ -10,7 +10,6 @@ from torch.utils.data import DataLoader, Dataset
 import albumentations as A
 
 
-
 class BackgroundGenerator(threading.Thread):
     def __init__(self, generator, local_rank, max_prefetch=6):
         super(BackgroundGenerator, self).__init__()
@@ -37,9 +36,9 @@ class BackgroundGenerator(threading.Thread):
 
     def __iter__(self):
         return self
-    
-class DataLoaderX(DataLoader):
 
+
+class DataLoaderX(DataLoader):
     def __init__(self, local_rank, **kwargs):
         super(DataLoaderX, self).__init__(**kwargs)
         # sequence of executions specific to a device
@@ -58,7 +57,9 @@ class DataLoaderX(DataLoader):
             return None
         with torch.cuda.stream(self.stream):
             for k in range(len(self.batch)):
-                self.batch[k] = self.batch[k].to(device=self.local_rank, non_blocking=True)
+                self.batch[k] = self.batch[k].to(
+                    device=self.local_rank, non_blocking=True
+                )
 
     def __next__(self):
         torch.cuda.current_stream().wait_stream(self.stream)
@@ -67,19 +68,22 @@ class DataLoaderX(DataLoader):
             raise StopIteration
         self.preload()
         return batch
-    
+
+
 class GenericDataset(Dataset):
-    def __init__(self, 
-                 image_size: int,
-                 image_paths: Union[List, np.ndarray], 
-                 targets: Optional[Union[List, np.ndarray]],
-                 transform: Optional[Union[A.Compose, A.BasicTransform]]):
+    def __init__(
+        self,
+        image_size: int,
+        image_paths: Union[List, np.ndarray],
+        targets: Optional[Union[List, np.ndarray]],
+        transform: Optional[Union[A.Compose, A.BasicTransform]],
+    ):
         super().__init__()
         self.size = image_size
         self.image_paths = image_paths
         self.targets = targets
         self.transform = transform
-        
+
     def __len__(self):
         return len(self.image_paths)
 
@@ -92,12 +96,12 @@ class GenericDataset(Dataset):
         except Exception as e:
             print("Cannot read image ", image_fname, "at index", index)
             print(e)
-            
+
         image = cv2.resize(image, (self.size, self.size))
-            
+
         if self.transform:
             image = self.transform(image=image)["image"]
-            
+
         target = self.targets[index]
         sample = {}
         sample["input_image"] = image

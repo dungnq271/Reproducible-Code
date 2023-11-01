@@ -1,5 +1,5 @@
 import random
-from typing import Union, Tuple, List, Any
+from typing import Union, Tuple, List, Any, Dict
 import json
 
 from tqdm import tqdm
@@ -35,8 +35,8 @@ def split_text_into_lines(text: str, n_text_one_line: int = 5):
 def plot_multiple_images(
     paths_to_images: List,
     path2label: dict = None,
-    fig_size: int = None, 
-    grid_size: int = None, 
+    fig_size: int = None,
+    grid_size: int = None,
     size: int = None,
     axes_pad: float = 0.3,
 ) -> None:
@@ -54,7 +54,8 @@ def plot_multiple_images(
     number_of_images = grid_size**2
     image_paths_to_plot = random.sample(paths_to_images, number_of_images)
     grid = ImageGrid(
-        fig, 111,  # similar to subplot(111)
+        fig,
+        111,  # similar to subplot(111)
         nrows_ncols=(grid_size, grid_size),  # creates 2x2 grid of axes
         axes_pad=axes_pad,  # pad between axes in inch.
     )
@@ -69,8 +70,8 @@ def plot_multiple_images(
             ax.set_title(labels[i])
 
     plt.show()
-    
-    
+
+
 def display_image_with_desc_grid(
     img_desc_pairs: Union[List, Tuple],
     n_sample: int,
@@ -205,7 +206,7 @@ def plot_values_counts(
     """
     type_counts = {}
 
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         for line in tqdm(f):
             meta = json.loads(line)
             attribute = get_field_func(meta)
@@ -214,9 +215,28 @@ def plot_values_counts(
                     type_counts[attr] = type_counts.get(attr, 0) + 1
             else:
                 type_counts[attribute] = type_counts.get(attribute, 0) + 1
-                
-    type_counts = dict(sorted(type_counts.items(), key=lambda x: x[1], reverse=True))
-    df = pd.DataFrame({field: list(type_counts.keys()), "Counts": list(type_counts.values())})
+
+    plot_attribute_frequency(type_counts, field, x_label_rotation)
+
+
+def plot_attribute_frequency(
+    type_counts: Dict,
+    field: str,
+    x_label_rotation: float = 0.0,
+):
+    """Display frequency of attribute
+
+    Args:
+       type_counts (Dict): dictionary with frequency of attributes
+       field (str): name of xlabel of plot
+       x_label_rotation (float): rotation angle of xlabel of plot
+    """
+    type_counts = dict(
+        sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
+    )
+    df = pd.DataFrame(
+        {field: list(type_counts.keys()), "Counts": list(type_counts.values())}
+    )
 
     ax = sns.barplot(data=df.head(10), x=field, y="Counts")
     ax.bar_label(ax.containers[0], fontsize=10)

@@ -15,7 +15,7 @@ def load_image(
     Args:
         path_to_image (str): absolute paths to images
         toRGB (bool, optional): _description_. Defaults to True.
-    
+
     Returns:
         (np.ndarray): output image
     """
@@ -34,7 +34,7 @@ def base64_to_image(base64_string: str) -> Image:
 
     Args:
        base64_string (str): input base64 string
-    
+
     Returns:
        (PIL.Image): output image
     """

@@ -4,6 +4,7 @@ from typing import Dict, List, Union
 
 from tqdm import tqdm
 import pandas as pd
+import pickle
 
 
 def load_json(path: str, verbose: bool = False) -> Union[Dict, List[Dict]]:
@@ -36,10 +37,19 @@ def load_json(path: str, verbose: bool = False) -> Union[Dict, List[Dict]]:
     return data
 
 
-def load_jsonl(
-    path: str,
-    num_lines: int = None
-) -> List[Dict]:
+def save_json(data: Union[Dict, List[Dict]], path: str) -> None:
+    """Load a json file from path
+
+    Args:
+        data (Union[Dict, List[Dict]]): metadata to save
+        path (str): relative or absolute path to json file
+    """
+    with open(path, "w") as f:
+        json.dump(data, f)
+    f.close()
+    
+
+def load_jsonl(path: str, num_lines: int = None) -> List[Dict]:
     """Load a jsonl metadata file from path
 
     Args:
@@ -51,7 +61,7 @@ def load_jsonl(
     """
     count = 0
     contents = []
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         for line in tqdm(f):
             contents.append(json.loads(line))
             count += 1
@@ -78,8 +88,33 @@ def to_csv(path: str, df: pd.DataFrame):
     """Save a csv file
 
     Args:
-    path (str): relative or absolute path to a csv file to save
-    df (pd.DataFrame): dataframe to save
+        path (str): relative or absolute path to a csv file to save
+        df (pd.DataFrame): dataframe to save
     """
     df.to_csv(path, index=False)
     return df
+
+
+def load_pickle(path: str):
+    """Load a pickle file
+    
+    Args:
+        path(str): path to pkl file
+    """
+    f = open(path, "rb")
+    contents = pickle.load(f)
+    f.close()
+
+    return contents
+
+
+def save_pickle(contents, path: str):
+    """Save a pickle file
+    
+    Args:
+        contents: data to save
+        path(str): path to pkl file
+    """
+    f = open(path, "rb")
+    pickle.dump(contents, f)
+    f.close()

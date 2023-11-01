@@ -2,6 +2,7 @@ from icecream import ic
 
 from torchsummary import summary
 
+
 def freeze(model, idx_to_unfreeze_from_last, device):
     full_layers = list(model.named_children())
     list_layers = full_layers[-idx_to_unfreeze_from_last:]
@@ -17,5 +18,5 @@ def freeze(model, idx_to_unfreeze_from_last, device):
         ic(name)
         for param in layer.parameters():
             print(param.requires_grad)
-    
+
     # summary(model, [(3, 224, 224), (820, )], device=device)
