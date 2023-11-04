@@ -7,6 +7,34 @@ import pandas as pd
 import pickle
 
 
+def load_txt(path: str) -> List:
+    """Load a txt file from path
+
+    Args:
+        path (str): relative or absolute path to txt file
+
+    Returns:
+        List: content loaded from file
+    """
+    with open(path, 'r') as f:
+        contents = [line.strip() for line in f.readlines()]
+    return contents
+    
+
+def save_txt(data: List, path: str) -> None:
+    """Load a txt file from path
+
+    Args:
+        data (Union[Dict, List[Dict]]): metadata to save
+        path (str): relative or absolute path to txt file
+    """
+    with open(path, "w") as f:
+        for content in data:
+            f.write(content)
+            f.write('\n')
+    f.close()
+
+
 def load_json(path: str, verbose: bool = False) -> Union[Dict, List[Dict]]:
     """Load a json file from path
 
@@ -45,7 +73,7 @@ def save_json(data: Union[Dict, List[Dict]], path: str) -> None:
         path (str): relative or absolute path to json file
     """
     with open(path, "w") as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4)
     f.close()
     
 
@@ -118,3 +146,12 @@ def save_pickle(contents, path: str):
     f = open(path, "rb")
     pickle.dump(contents, f)
     f.close()
+
+
+if __name__ == "__main__":
+    data = ["lajgl", "jlkfj", "ljgk"]
+    path = "test.txt"
+    
+    save_txt(data, path)
+    data = load_txt(path)
+    print(data)
