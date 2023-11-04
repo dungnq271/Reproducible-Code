@@ -32,42 +32,58 @@ def split_text_into_lines(text: str, n_text_one_line: int = 5):
     return text
 
 
-def plot_multiple_images(
-    paths_to_images: List,
-    path2label: dict = None,
-    fig_size: int = None,
-    grid_size: int = None,
+def display_multiple_images(
+    images: List[Union[str, np.ndarray]],
+    grid_nrows: int,
+    fig_size: int,
+    num_images_to_plot: int = None,
     size: int = None,
+    titles: List[str] = None,
+    fontsize: int = 5,
     axes_pad: float = 0.3,
 ) -> None:
     """Plotting a grid of random images from specified paths
 
     Args:
-        paths_to_images (List): list of absolute paths to images
-        path2label (dict): mapping from path of images to labels
-        fig_size (int): size of figure
-        grid_size (int): grid size of images
+        images List[Union[str, np.ndarray]]: list of paths to images or np array images
+        grid_nrows (int): number of rows of plotting grid
+        fig_size (int): size of plotting grid
+        num_images_to_plot (int): number of images sample of image list to plot
         size (int): size of images after resizing for plotting
+        titles (List[str]): list of image labels if any
+        fontsize (int): fontsize of outfit titles
         axes_pad (float): # pad between axes in inch
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
-    number_of_images = grid_size**2
-    image_paths_to_plot = random.sample(paths_to_images, number_of_images)
+    num_images = len(images)
+
+    if num_images_to_plot is not None and num_images_to_plot <= num_images:
+        images = random.sample(images, num_images_to_plot)
+        num_images = num_images_to_plot
+
+    grid_ncols = int(num_images // grid_nrows)
     grid = ImageGrid(
         fig,
         111,  # similar to subplot(111)
-        nrows_ncols=(grid_size, grid_size),  # creates 2x2 grid of axes
+        nrows_ncols=(grid_nrows, grid_ncols), 
         axes_pad=axes_pad,  # pad between axes in inch.
     )
-    if path2label:
-        labels = [path2label[p] for p in image_paths_to_plot]
 
-    for i, (ax, path) in enumerate(zip(grid, image_paths_to_plot)):
-        image = load_image(path)
-        image = cv2.resize(image, (size, size))
+    for i, (ax, image) in tqdm(enumerate(zip(grid, images))):
+        if isinstance(image, str):
+            try:
+                image = load_image(image)
+            except Exception as e:
+                print(e)
+                continue
+            
+        if size is not None:
+            image = cv2.resize(image, (size, size))
+
         ax.imshow(image)
-        if path2label:
-            ax.set_title(labels[i])
+        if titles:
+            title = split_text_into_lines(titles[i])
+            ax.set_title(title, fontsize=fontsize)
 
     plt.show()
 
@@ -116,7 +132,7 @@ def display_image_with_desc_grid(
 
 
 def display_image_sets(
-    images: List[Union[np.ndarray, List[np.ndarray]]],
+    images: List[List[np.ndarray]],
     set_titles: List[str] = None,
     descriptions: List[List[str]] = None,
     figsize: Tuple[int, int] = (10, 20),
@@ -126,7 +142,7 @@ def display_image_sets(
     """Display item sets with their titles
 
     Args:
-        images (List[Union[np.ndarray, List[np.ndarray]]): list of images to load and display
+        images (List[List[np.ndarray]]): list of images to load and display
         set_titles (List[str]): list of titles accompanying each set
         descriptions (List[List[str]]): list of description of each item, default None
         figsize (Tuple[int, int]): figsize to plot in matplotlib
@@ -155,37 +171,27 @@ def display_image_sets(
             text = set_titles[row]
             text = split_text_into_lines(text)
 
-        if isinstance(set_items, np.ndarray):
-            ax = axes[row]
-            if set_titles is not None:
-                ax.set_ylabel(text, fontsize=fontsize)
-            ax.imshow(set_items)
+        if set_titles is not None:
+            if n_rows == 1:
+                axes[0].set_ylabel(text, fontsize=fontsize)
+            else:
+                axes[row, 0].set_ylabel(text, fontsize=fontsize)
+
+        for col, image in enumerate(set_items):
+            if n_rows == 1:
+                ax = axes[col]
+            else:
+                ax = axes[row, col]
+
+            if descriptions is not None and len(descriptions) > row:
+                desc = descriptions[row][col]
+                desc = split_text_into_lines(desc)
+                ax.set_xlabel(desc, fontsize=fontsize)
+
+            ax.imshow(image)
             ax.set_xticks([], [])
             ax.set_yticks([], [])
             ax.grid(False)
-
-        else:
-            if set_titles is not None:
-                if n_rows == 1:
-                    axes[0].set_ylabel(text, fontsize=fontsize)
-                else:
-                    axes[row, 0].set_ylabel(text, fontsize=fontsize)
-
-            for col, image in enumerate(set_items):
-                if n_rows == 1:
-                    ax = axes[col]
-                else:
-                    ax = axes[row, col]
-
-                if descriptions is not None:
-                    desc = descriptions[row][col]
-                    desc = split_text_into_lines(desc)
-                    ax.set_xlabel(desc, fontsize=fontsize)
-
-                ax.imshow(image)
-                ax.set_xticks([], [])
-                ax.set_yticks([], [])
-                ax.grid(False)
 
     plt.show()
 
