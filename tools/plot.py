@@ -41,6 +41,7 @@ def display_multiple_images(
     titles: List[str] = None,
     fontsize: int = 5,
     axes_pad: float = 0.3,
+    line_length: int = 6
 ) -> None:
     """Plotting a grid of random images from specified paths
 
@@ -53,6 +54,7 @@ def display_multiple_images(
         titles (List[str]): list of image labels if any
         fontsize (int): fontsize of outfit titles
         axes_pad (float): # pad between axes in inch
+        line_length (int): # words in a line
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
     num_images = len(images)
@@ -82,7 +84,7 @@ def display_multiple_images(
 
         ax.imshow(image)
         if titles:
-            title = split_text_into_lines(titles[i])
+            title = split_text_into_lines(titles[i], n_text_one_line=line_length)
             ax.set_title(title, fontsize=fontsize)
 
     plt.show()
