@@ -8,7 +8,7 @@ from icecream import ic
 
 
 def load_image(
-    path_to_image: str, backend: str = "pillow", toRGB: bool = True
+    path_to_image: str, backend: str = "cv2", toRGB: bool = True
 ) -> np.ndarray:
     """Loading image from specied path
 
@@ -23,7 +23,7 @@ def load_image(
         image = cv2.imread(path_to_image)
         if toRGB:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    elif backend == "pillow":
+    elif backend == "pil":
         image = np.array(Image.open(path_to_image))
 
     return image

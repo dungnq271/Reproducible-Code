@@ -1,4 +1,4 @@
-from .image import *
+from .image_io import *
 
 # from .dataset import *
 # from .augment import *
