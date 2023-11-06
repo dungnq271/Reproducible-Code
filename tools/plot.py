@@ -10,7 +10,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import seaborn as sns
 import pandas as pd
 
-from .image import load_image
+from .image_io import load_image
 
 sns.set_theme(style="white")
 
