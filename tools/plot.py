@@ -228,24 +228,53 @@ def plot_values_counts(
 
 
 def plot_attribute_frequency(
-    type_counts: Dict,
+    df: pd.DataFrame,
     field: str,
+    top: int = None,
+    bar_label: bool = True,
     x_label_rotation: float = 0.0,
 ):
-    """Display frequency of attribute
+    """Display frequency of a field of a dataframe
 
     Args:
-       type_counts (Dict): dictionary with frequency of attributes
+       df (pd.DataFrame): dataframe to get field for plotting frequency
        field (str): name of xlabel of plot
+       top (int): number of top frequent fields to plot
+       bar_label (bool): whether to display bar label
        x_label_rotation (float): rotation angle of xlabel of plot
     """
-    type_counts = dict(
-        sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
-    )
-    df = pd.DataFrame(
-        {field: list(type_counts.keys()), "Counts": list(type_counts.values())}
-    )
+    freqs = df[field].value_counts().reset_index()
 
-    ax = sns.barplot(data=df.head(10), x=field, y="Counts")
-    ax.bar_label(ax.containers[0], fontsize=10)
+    if top:
+        freqs = freqs.head(top)
+
+    ax = sns.barplot(data=freqs, x=field, y="index")
+
+    if bar_label:
+        ax.bar_label(ax.containers[0], fontsize=10)
+
     plt.xticks(rotation=x_label_rotation)
+
+    
+# def plot_attribute_frequency(
+#     type_counts: Dict,
+#     field: str,
+#     x_label_rotation: float = 0.0,
+# ):
+#     """Display frequency of attribute
+
+#     Args:
+#        type_counts (Dict): dictionary with frequency of attributes
+#        field (str): name of xlabel of plot
+#        x_label_rotation (float): rotation angle of xlabel of plot
+#     """
+#     type_counts = dict(
+#         sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
+#     )
+#     df = pd.DataFrame(
+#         {field: list(type_counts.keys()), "Counts": list(type_counts.values())}
+#     )
+
+#     ax = sns.barplot(data=df.head(10), x=field, y="Counts")
+#     ax.bar_label(ax.containers[0], fontsize=10)
+#     plt.xticks(rotation=x_label_rotation)
