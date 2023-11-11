@@ -72,7 +72,7 @@ def save_json(data: Union[Dict, List[Dict]], path: str) -> None:
         data (Union[Dict, List[Dict]]): metadata to save
         path (str): relative or absolute path to json file
     """
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
     f.close()
     
