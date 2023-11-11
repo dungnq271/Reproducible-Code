@@ -91,7 +91,11 @@ def display_multiple_images(
 
         ax.imshow(image)
         if titles:
-            title = split_text_into_lines(titles[i], num_word_one_line=line_length)
+            title = split_text_into_lines(
+                titles[i],
+                sep=sep,
+                num_word_one_line=line_length
+            )
             ax.set_title(title, fontsize=fontsize)
 
     plt.show()
