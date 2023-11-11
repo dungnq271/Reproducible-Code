@@ -15,18 +15,23 @@ from .image_io import load_image
 sns.set_theme(style="white")
 
 
-def split_text_into_lines(text: str, n_text_one_line: int = 5):
+def split_text_into_lines(
+    text: str,
+    sep: str = ' ',
+    num_word_one_line: int = 5
+):
     """Split text into multiple lines to display with image
 
     Args:
         text (str): input text
-
+        sep (str): separator between words of text
+        num_word_one_line (str): number of words in one line
     Returns
         (str): result text
     """
-    desc_list = text.split(" ")
+    desc_list = text.split(sep)
     for j, elem in enumerate(desc_list):
-        if j > 0 and j % n_text_one_line == 0:
+        if j > 0 and j % num_word_one_line == 0:
             desc_list[j] = desc_list[j] + "\n"
     text = " ".join(desc_list)
     return text
@@ -37,11 +42,12 @@ def display_multiple_images(
     grid_nrows: int,
     fig_size: int,
     num_images_to_plot: int = None,
-    size: int = None,
+    img_size: int = None,
     titles: List[str] = None,
     fontsize: int = 5,
     axes_pad: float = 0.3,
-    line_length: int = 6
+    line_length: int = 6,
+    sep: str = ' '
 ) -> None:
     """Plotting a grid of random images from specified paths
 
@@ -50,11 +56,12 @@ def display_multiple_images(
         grid_nrows (int): number of rows of plotting grid
         fig_size (int): size of plotting grid
         num_images_to_plot (int): number of images sample of image list to plot
-        size (int): size of images after resizing for plotting
+        img_size (int): size of images after resizing for plotting
         titles (List[str]): list of image labels if any
         fontsize (int): fontsize of outfit titles
         axes_pad (float): # pad between axes in inch
-        line_length (int): # words in a line
+        line_length (int): # words in a line for title 
+        sep (str): separator between words of title 
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
     num_images = len(images)
@@ -79,12 +86,12 @@ def display_multiple_images(
                 print(e)
                 continue
             
-        if size is not None:
-            image = cv2.resize(image, (size, size))
+        if img_size is not None:
+            image = cv2.resize(image, (img_size, img_size))
 
         ax.imshow(image)
         if titles:
-            title = split_text_into_lines(titles[i], n_text_one_line=line_length)
+            title = split_text_into_lines(titles[i], num_word_one_line=line_length)
             ax.set_title(title, fontsize=fontsize)
 
     plt.show()
@@ -248,7 +255,7 @@ def plot_attribute_frequency(
     if top:
         freqs = freqs.head(top)
 
-    ax = sns.barplot(data=freqs, x=field, y="index")
+    ax = sns.barplot(data=freqs, x=field, y="count")
 
     if bar_label:
         ax.bar_label(ax.containers[0], fontsize=10)
