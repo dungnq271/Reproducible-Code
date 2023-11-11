@@ -4,7 +4,6 @@ from io import BytesIO
 import numpy as np
 import cv2
 from PIL import Image
-from icecream import ic
 
 
 def load_image(
