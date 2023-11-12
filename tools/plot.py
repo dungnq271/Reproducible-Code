@@ -282,10 +282,8 @@ def plot_attribute_frequency(
        field (str): name of xlabel of plot
        width (int): width of plotting figure
        height (int): height of plotting figure
-       top (int): number of top frequent fields to plot
-       
+       idx_ranges (List(int)): list including start and end index row to select
        bar_label (bool): whether to display bar label
-       x_label_rotation (float): rotation angle of xlabel of plot
     """
     freqs = df[field].value_counts()
 
