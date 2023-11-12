@@ -272,7 +272,7 @@ def plot_attribute_frequency(
     field: str,
     width: int,
     height: int,
-    idx_ranges: List[int],
+    idx_ranges: List[int] = None,
     bar_label: bool = True,
 ):
     """Display frequency of a field of a dataframe
