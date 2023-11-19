@@ -5,6 +5,7 @@ import json
 from tqdm import tqdm
 import numpy as np
 import cv2
+from PIL import Image
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 import seaborn as sns
@@ -87,7 +88,10 @@ def display_multiple_images(
                 continue
             
         if img_size is not None:
-            image = cv2.resize(image, (img_size, img_size))
+            if isinstance(image, Image.Image):
+                image = image.resize(img_size, img_size)
+            elif isinstance(image, np.ndarray):
+                image = cv2.resize(image, (img_size, img_size))
 
         ax.imshow(image)
         if titles:
