@@ -1,5 +1,6 @@
 import base64
 from io import BytesIO
+from typing import Any
 
 import numpy as np
 import cv2
@@ -7,8 +8,11 @@ from PIL import Image
 
 
 def load_image(
-    path_to_image: str, backend: str = "cv2", toRGB: bool = True
-) -> np.ndarray:
+    path_to_image: str,
+    backend: str = "cv2",
+    toRGB: bool = True,
+    to_array: bool = True
+) -> Any:
     """Loading image from specied path
 
     Args:
@@ -16,14 +20,18 @@ def load_image(
         toRGB (bool, optional): _description_. Defaults to True.
 
     Returns:
-        (np.ndarray): output image
+        (Any): output image
     """
+    image = None
+
     if backend == "cv2":
         image = cv2.imread(path_to_image)
         if toRGB:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     elif backend == "pil":
-        image = np.array(Image.open(path_to_image))
+        image = Image.open(path_to_image)
+        if to_array:
+            image = np.array(image)
 
     return image
 
