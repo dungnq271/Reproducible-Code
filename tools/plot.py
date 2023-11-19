@@ -86,12 +86,13 @@ def display_multiple_images(
             except Exception as e:
                 print(e)
                 continue
-            
+
         if img_size is not None:
+            new_sizes = (img_size, img_size)
             if isinstance(image, Image.Image):
-                image = image.resize(img_size, img_size)
+                image = image.resize(new_sizes)
             elif isinstance(image, np.ndarray):
-                image = cv2.resize(image, (img_size, img_size))
+                image = cv2.resize(image, new_sizes)
 
         ax.imshow(image)
         if titles:
