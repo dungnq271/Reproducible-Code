@@ -42,7 +42,6 @@ def display_multiple_images(
     images: List[Union[str, np.ndarray]],
     grid_nrows: int,
     fig_size: int,
-    num_images_to_plot: int = None,
     img_size: int = None,
     titles: List[str] = None,
     fontsize: int = 5,
@@ -56,7 +55,6 @@ def display_multiple_images(
         images List[Union[str, np.ndarray]]: list of paths to images or np array images
         grid_nrows (int): number of rows of plotting grid
         fig_size (int): size of plotting grid
-        num_images_to_plot (int): number of images sample of image list to plot
         img_size (int): size of images after resizing for plotting
         titles (List[str]): list of image labels if any
         fontsize (int): fontsize of outfit titles
@@ -66,10 +64,6 @@ def display_multiple_images(
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
     num_images = len(images)
-
-    if num_images_to_plot is not None and num_images_to_plot <= num_images:
-        images = random.sample(images, num_images_to_plot)
-        num_images = num_images_to_plot
 
     grid_ncols = int(num_images // grid_nrows)
     grid = ImageGrid(
