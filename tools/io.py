@@ -1,10 +1,32 @@
+import os
+import os.path as osp
 import json
 from pprint import pprint
 from typing import Dict, List, Union
+import shutil
 
 from tqdm import tqdm
 import pandas as pd
 import pickle
+
+
+def create_dir(path: str, restart: bool = True):
+    """Make a new dir if it's not exist else 
+       remove it and start again
+    
+    Args:
+        path (str): absolute path to the new dir
+        restart (bool): 
+    """
+    if osp.exists(path):
+        if restart:
+            shutil.rmtree(path)
+            os.mkdir(path)
+        else:
+            # do nothing
+            return
+    else:
+        os.mkdir(path)
 
 
 def load_txt(path: str) -> List:
