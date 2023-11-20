@@ -34,7 +34,7 @@ def split_text_into_lines(
     for j, elem in enumerate(desc_list):
         if j > 0 and j % num_word_one_line == 0:
             desc_list[j] = desc_list[j] + "\n"
-    text = " ".join(desc_list)
+    text = sep.join(desc_list)
     return text
 
 
