@@ -29,17 +29,21 @@ def create_dir(path: str, restart: bool = True):
         os.mkdir(path)
 
 
-def load_txt(path: str) -> List:
+def load_txt(path: str, num_lines: int = None) -> List:
     """Load a txt file from path
 
     Args:
         path (str): relative or absolute path to txt file
+        num_lines (int): number of lines to get from file
 
     Returns:
         List: content loaded from file
     """
     with open(path, 'r') as f:
-        contents = [line.strip() for line in f.readlines()]
+        if num_lines:
+            contents = [line.strip() for line in f.readlines()[num_lines]]
+        else:
+            contents = [line.strip() for line in f.readlines()]            
     return contents
     
 
