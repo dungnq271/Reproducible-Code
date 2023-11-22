@@ -267,7 +267,7 @@ def plot_values_counts(
 
     
 def plot_attribute_frequency(
-    df: pd.DataFrame,
+    data: Union[List, pd.DataFrame],
     field: str,
     width: int,
     height: int,
@@ -277,21 +277,24 @@ def plot_attribute_frequency(
     """Display frequency of a field of a dataframe
 
     Args:
-       df (pd.DataFrame): dataframe to get field for plotting frequency
+       data (Union[List, pd.Series]): data to get field for plotting frequency
        field (str): name of xlabel of plot
        width (int): width of plotting figure
        height (int): height of plotting figure
        idx_ranges (List(int)): list including start and end index row to select
        bar_label (bool): whether to display bar label
     """
-    freqs = df[field].value_counts()
+    if isinstance(data, list):
+        data = pd.DataFrame(data, columns=[field])
+
+    freqs = data[field].value_counts()
 
     if idx_ranges:
         freqs = freqs[idx_ranges[0]:idx_ranges[1]]
         
     sns.set(style='darkgrid')
     fig, ax = plt.subplots(figsize=(width, height))
-    sns.countplot(y=field, data=df, ax=ax, order = freqs.index)
+    sns.countplot(y=field, data=data, ax=ax, order = freqs.index)
 
     if bar_label:
         ax.bar_label(ax.containers[0], fontsize=10)
