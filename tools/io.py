@@ -10,25 +10,6 @@ import pandas as pd
 import pickle
 
 
-def create_dir(path: str, restart: bool = True):
-    """Make a new dir if it's not exist else 
-       remove it and start again
-    
-    Args:
-        path (str): absolute path to the new dir
-        restart (bool): 
-    """
-    if osp.exists(path):
-        if restart:
-            shutil.rmtree(path)
-            os.mkdir(path)
-        else:
-            # do nothing
-            return
-    else:
-        os.mkdir(path)
-
-
 def load_txt(path: str, num_lines: int = None) -> List:
     """Load a txt file from path
 
@@ -39,13 +20,13 @@ def load_txt(path: str, num_lines: int = None) -> List:
     Returns:
         List: content loaded from file
     """
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         if num_lines:
             contents = [line.strip() for line in f.readlines()[num_lines]]
         else:
-            contents = [line.strip() for line in f.readlines()]            
+            contents = [line.strip() for line in f.readlines()]
     return contents
-    
+
 
 def save_txt(data: List, path: str) -> None:
     """Load a txt file from path
@@ -57,7 +38,7 @@ def save_txt(data: List, path: str) -> None:
     with open(path, "w") as f:
         for content in data:
             f.write(content)
-            f.write('\n')
+            f.write("\n")
     f.close()
 
 
@@ -101,7 +82,7 @@ def save_json(data: Union[Dict, List[Dict]], path: str) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
     f.close()
-    
+
 
 def load_jsonl(path: str, num_lines: int = None) -> List[Dict]:
     """Load a jsonl metadata file from path
@@ -151,7 +132,7 @@ def to_csv(path: str, df: pd.DataFrame):
 
 def load_pickle(path: str):
     """Load a pickle file
-    
+
     Args:
         path(str): path to pkl file
     """
@@ -164,7 +145,7 @@ def load_pickle(path: str):
 
 def save_pickle(contents, path: str):
     """Save a pickle file
-    
+
     Args:
         contents: data to save
         path(str): path to pkl file
@@ -174,10 +155,57 @@ def save_pickle(contents, path: str):
     f.close()
 
 
+def create_dir(path: str, restart: bool = True):
+    """Make a new dir if it's not exist else
+       remove it and start again
+
+    Args:
+        path (str): absolute path to the new dir
+        restart (bool): whether remove the existing dir and create a new one
+    """
+    if osp.exists(path):
+        if restart:
+            shutil.rmtree(path)
+            os.mkdir(path)
+        else:
+            # do nothing
+            return
+    else:
+        os.mkdir(path)
+
+
+def copy_file(
+    paths: str,
+    org_dir: str,
+    dst_dir: str,
+    restart: bool = True
+):
+    """Make a new dir if it's not exist else
+       remove it and start again
+
+    Args:
+        paths (str): relative paths of file to the old directory
+        org_dir (str): absolute path to the old directory
+        dst_dir (str): absolute path to the new directory
+        restart (bool): whether remove the destination dir and create a new one
+    """
+    create_dir(dst_dir, restart)
+
+    for path in tqdm(paths):
+        org_path = osp.join(org_dir, path)
+        dst_path = osp.join(dst_dir, path)
+        shutil.copy(org_path, dst_path)
+
+    print(
+        f"Number of files in directory {dst_dir}:",
+        len(os.listdir(dst_dir)
+    )
+
+
 if __name__ == "__main__":
     data = ["lajgl", "jlkfj", "ljgk"]
     path = "test.txt"
-    
+
     save_txt(data, path)
     data = load_txt(path)
     print(data)
