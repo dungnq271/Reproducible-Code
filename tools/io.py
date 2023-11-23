@@ -174,7 +174,7 @@ def create_dir(path: str, restart: bool = True):
         os.mkdir(path)
 
 
-def copy_file(
+def copy_files(
     paths: str,
     org_dir: str,
     dst_dir: str,
@@ -198,7 +198,7 @@ def copy_file(
 
     print(
         f"Number of files in directory {dst_dir}:",
-        len(os.listdir(dst_dir)
+        len(os.listdir(dst_dir))
     )
 
 
