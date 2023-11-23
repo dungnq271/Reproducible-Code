@@ -11,7 +11,7 @@ def load_image(
     path_to_image: str,
     backend: str = "cv2",
     toRGB: bool = True,
-    to_array: bool = True
+    to_array: bool = True,
 ) -> Any:
     """Loading image from specied path
 

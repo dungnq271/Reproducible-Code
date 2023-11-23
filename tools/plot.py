@@ -17,9 +17,7 @@ sns.set_theme(style="white")
 
 
 def split_text_into_lines(
-    text: str,
-    sep: str = ' ',
-    num_word_one_line: int = 5
+    text: str, sep: str = " ", num_word_one_line: int = 5
 ):
     """Split text into multiple lines to display with image
 
@@ -47,7 +45,7 @@ def display_multiple_images(
     fontsize: int = 5,
     axes_pad: float = 0.3,
     line_length: int = 6,
-    sep: str = ' '
+    sep: str = " ",
 ) -> None:
     """Plotting a grid of random images from specified paths
 
@@ -59,8 +57,8 @@ def display_multiple_images(
         titles (List[str]): list of image labels if any
         fontsize (int): fontsize of outfit titles
         axes_pad (float): # pad between axes in inch
-        line_length (int): # words in a line for title 
-        sep (str): separator between words of title 
+        line_length (int): # words in a line for title
+        sep (str): separator between words of title
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
     num_images = len(images)
@@ -69,7 +67,7 @@ def display_multiple_images(
     grid = ImageGrid(
         fig,
         111,  # similar to subplot(111)
-        nrows_ncols=(grid_nrows, grid_ncols), 
+        nrows_ncols=(grid_nrows, grid_ncols),
         axes_pad=axes_pad,  # pad between axes in inch.
     )
 
@@ -91,9 +89,7 @@ def display_multiple_images(
         ax.imshow(image)
         if titles:
             title = split_text_into_lines(
-                titles[i],
-                sep=sep,
-                num_word_one_line=line_length
+                titles[i], sep=sep, num_word_one_line=line_length
             )
             ax.set_title(title, fontsize=fontsize)
 
@@ -265,7 +261,7 @@ def plot_values_counts(
 
 #     plt.xticks(rotation=x_label_rotation)
 
-    
+
 def plot_attribute_frequency(
     data: Union[List, pd.DataFrame],
     field: str,
@@ -290,14 +286,14 @@ def plot_attribute_frequency(
     freqs = data[field].value_counts()
 
     if idx_ranges:
-        freqs = freqs[idx_ranges[0]:idx_ranges[1]]
-        
-    sns.set(style='darkgrid')
+        freqs = freqs[idx_ranges[0] : idx_ranges[1]]
+
+    sns.set(style="darkgrid")
     fig, ax = plt.subplots(figsize=(width, height))
-    sns.countplot(y=field, data=data, ax=ax, order = freqs.index)
+    sns.countplot(y=field, data=data, ax=ax, order=freqs.index)
 
     if bar_label:
         ax.bar_label(ax.containers[0], fontsize=10)
-    
+
     fig.show()
     return freqs
