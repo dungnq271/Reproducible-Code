@@ -178,7 +178,7 @@ def create_dir(path: str, restart: bool = True):
 
 
 def copy_files(
-    paths: str,
+    paths: List[str],
     dst_dir: str,
     org_dir: str = None,
     restart: bool = True
