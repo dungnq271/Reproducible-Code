@@ -106,16 +106,19 @@ def load_jsonl(path: str, num_lines: int = None) -> List[Dict]:
     return contents
 
 
-def load_csv(path: str):
+def load_csv(path: str, verbose: bool = True):
     """Load data from a csv file
 
     Args:
-    path (str): relative or absolute path to a csv file
+        path (str): relative or absolute path to a csv file
+        verbose (bool): whether to display info about the data
 
     Returns:
-    pd.DataFrame
+        pd.DataFrame
     """
     df = pd.read_csv(path, index_col=None)
+    if verbose:
+        print("Number of rows:", len(df))
     return df
 
 
