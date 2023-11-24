@@ -179,8 +179,8 @@ def create_dir(path: str, restart: bool = True):
 
 def copy_files(
     paths: str,
-    org_dir: str,
     dst_dir: str,
+    org_dir: str = None,
     restart: bool = True
 ):
     """Make a new dir if it's not exist else
@@ -195,7 +195,14 @@ def copy_files(
     create_dir(dst_dir, restart)
 
     for path in tqdm(paths):
-        org_path = osp.join(org_dir, path)
+        # if path is absolute path
+        if org_dir is None:
+            org_path = path
+            path = osp.basename(path)
+        # if path is relative path
+        else:
+            org_path = osp.join(org_dir, path)
+            
         dst_path = osp.join(dst_dir, path)
         shutil.copy(org_path, dst_path)
 
