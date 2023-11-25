@@ -153,7 +153,7 @@ def save_pickle(contents, path: str):
         contents: data to save
         path(str): path to pkl file
     """
-    f = open(path, "rb")
+    f = open(path, "wb")
     pickle.dump(contents, f)
     f.close()
 
