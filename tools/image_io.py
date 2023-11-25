@@ -1,10 +1,16 @@
+import os
+import os.path as osp
 import base64
 from io import BytesIO
-from typing import Any
+from typing import Any, List
+import shutil
 
+from tqdm import tqdm
 import numpy as np
 import cv2
 from PIL import Image
+
+from .io import create_dir
 
 
 def load_image(
@@ -67,3 +73,45 @@ def image_to_base64(image: Image) -> str:
     image.save(image_bytes, format="JPEG")
     base64_image = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
     return base64_image
+
+
+def copy_images(
+    paths: List[str],
+    dst_dir: str,
+    org_dir: str = None,
+    restart: bool = True,
+    fmt: str = ".jpg",
+):
+    """Make a new dir if it's not exist else
+       remove it and start again
+
+    Args:
+        paths (str): relative paths of file to the old directory
+        org_dir (str): absolute path to the old directory
+        dst_dir (str): absolute path to the new directory
+        restart (bool): whether remove the destination dir and create a new one
+        fmt (str): saving image format, .jpg or .png
+    """
+    create_dir(dst_dir, restart)
+
+    for path in tqdm(paths):
+        # if path is absolute path
+        if org_dir is None:
+            org_path = path
+            path = osp.basename(path)
+        # if path is relative path
+        else:
+            org_path = osp.join(org_dir, path)
+            
+        dst_path = osp.join(dst_dir, path)
+        try:
+            img = load_image(org_path)
+        except Exception:
+            continue
+
+        cv2.imwrite(dst_path.split('.')[0] + fmt, img)
+
+    print(
+        f"Number of files in directory {dst_dir}:",
+        len(os.listdir(dst_dir))
+    )
