@@ -27,11 +27,15 @@ def split_text_into_lines(
     Returns
         (str): result text
     """
+    if ';' in text:
+        sep = ';'
+        num_word_one_line = 1
+
     desc_list = text.split(sep)
     for j, elem in enumerate(desc_list):
         if j > 0 and j % num_word_one_line == 0:
             desc_list[j] = desc_list[j] + "\n"
-    text = sep.join(desc_list)
+    text = ' '.join(desc_list)
     return text
 
 
@@ -86,6 +90,8 @@ def display_multiple_images(
                 image = cv2.resize(image, new_sizes)
 
         ax.imshow(image)
+        ax.axis("off")
+
         if titles:
             title = split_text_into_lines(
                 titles[i], sep=sep, num_word_one_line=line_length
