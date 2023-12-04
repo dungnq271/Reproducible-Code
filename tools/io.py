@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import json
 from pprint import pprint
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Any
 import shutil
 
 from tqdm import tqdm
@@ -122,7 +122,7 @@ def load_csv(path: str, verbose: bool = True):
     return df
 
 
-def to_csv(path: str, df: pd.DataFrame):
+def save_csv(df: pd.DataFrame, path: str):
     """Save a csv file
 
     Args:
@@ -156,6 +156,23 @@ def save_pickle(contents, path: str):
     f = open(path, "wb")
     pickle.dump(contents, f)
     f.close()
+
+
+def save_and_load(data: Any, path: str):
+    """Save and load the data in one function
+
+    Args:
+        data (Any): data to save
+        path (str): absolute path to the new dir
+        mode (str): format file to save, in ["txt", "pickle", "json", "csv"]
+    """
+    mode = osp.basename(path).split('.')[-1]
+    save = globals()[f"save_{mode}"]
+    load = globals()[f"load_{mode}"]
+    if not osp.exists(path):
+        save(data, path)
+    data = load(path)
+    return data
 
 
 def create_dir(path: str, restart: bool = True):
