@@ -11,6 +11,7 @@ import seaborn as sns
 import pandas as pd
 
 from .image_io import load_image
+from icecream import ic
 
 sns.set_theme(style="white")
 
@@ -27,11 +28,18 @@ def split_text_into_lines(
     Returns
         (str): result text
     """
-    if ';' in text:
-        sep = ';'
+    desc_list = text.split(sep)
+
+    # dynamic number of word in one line
+    min_lines = 3
+    num_lines = len(desc_list) / num_word_one_line
+
+    if num_lines < min_lines:
+        num_word_one_line = int(len(desc_list) // min_lines)
+
+    if num_word_one_line == 0:
         num_word_one_line = 1
 
-    desc_list = text.split(sep)
     for j, elem in enumerate(desc_list):
         if j > 0 and j % num_word_one_line == 0:
             desc_list[j] = desc_list[j] + "\n"
