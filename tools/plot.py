@@ -11,6 +11,7 @@ import seaborn as sns
 import pandas as pd
 
 from .image_io import load_image
+from icecream import ic
 
 sns.set_theme(style="white")
 
@@ -27,11 +28,18 @@ def split_text_into_lines(
     Returns
         (str): result text
     """
-    if ';' in text:
-        sep = ';'
+    desc_list = text.split(sep)
+
+    # dynamic number of word in one line
+    min_lines = 3
+    num_lines = len(desc_list) / num_word_one_line
+
+    if num_lines < min_lines:
+        num_word_one_line = int(len(desc_list) // min_lines)
+
+    if num_word_one_line == 0:
         num_word_one_line = 1
 
-    desc_list = text.split(sep)
     for j, elem in enumerate(desc_list):
         if j > 0 and j % num_word_one_line == 0:
             desc_list[j] = desc_list[j] + "\n"
@@ -102,7 +110,7 @@ def display_multiple_images(
 
 
 def plot_attribute_frequency(
-    data: Union[List, pd.DataFrame],
+    data: Union[List, Dict, pd.DataFrame],
     field: str,
     width: int,
     height: int,
@@ -119,20 +127,27 @@ def plot_attribute_frequency(
        idx_ranges (List(int)): list including start and end index row to select
        bar_label (bool): whether to display bar label
     """
+    freqs = data
+
     if isinstance(data, list):
         data = pd.DataFrame(data, columns=[field])
 
-    freqs = data[field].value_counts()
+    if isinstance(data, pd.DataFrame):
+        freqs = data[field].value_counts()
+        if idx_ranges:
+            freqs = freqs[idx_ranges[0] : idx_ranges[1]]
 
-    if idx_ranges:
-        freqs = freqs[idx_ranges[0] : idx_ranges[1]]
+        sns.set(style="darkgrid")
+        fig, ax = plt.subplots(figsize=(width, height))
+        sns.countplot(y=field, data=data, ax=ax, order=freqs.index)
 
-    sns.set(style="darkgrid")
-    fig, ax = plt.subplots(figsize=(width, height))
-    sns.countplot(y=field, data=data, ax=ax, order=freqs.index)
+    if isinstance(data, dict):
+        data = pd.DataFrame(data, index=["count"]).T
+        data = data.reset_index(names=field).sort_values(by="count", ascending=False)
+        fig, ax = plt.subplots(figsize=(width, height))
+        sns.barplot(data=data, x="count", y=field, ax=ax)
 
     if bar_label:
         ax.bar_label(ax.containers[0], fontsize=10)
 
-    fig.show()
     return freqs
