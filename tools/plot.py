@@ -1,3 +1,4 @@
+import math
 from typing import Union, Tuple, List, Any, Dict
 import json
 
@@ -17,7 +18,8 @@ sns.set_theme(style="white")
 
 
 def split_text_into_lines(
-    text: str, sep: str = " ", num_word_one_line: int = 5
+    text: str, sep: str = " ",
+    num_lines: int = 3,
 ):
     """Split text into multiple lines to display with image
 
@@ -30,15 +32,7 @@ def split_text_into_lines(
     """
     desc_list = text.split(sep)
 
-    # dynamic number of word in one line
-    min_lines = 3
-    num_lines = len(desc_list) / num_word_one_line
-
-    if num_lines < min_lines:
-        num_word_one_line = int(len(desc_list) // min_lines)
-
-    if num_word_one_line == 0:
-        num_word_one_line = 1
+    num_word_one_line = math.ceil(len(desc_list) / num_lines)
 
     for j, elem in enumerate(desc_list):
         if j > 0 and j % num_word_one_line == 0:
@@ -55,7 +49,7 @@ def display_multiple_images(
     titles: List[str] = None,
     fontsize: int = 10,
     axes_pad: float = 0.3,
-    line_length: int = 6,
+    num_lines: int = 3,
     sep: str = " ",
 ) -> None:
     """Plotting a grid of random images from specified paths
@@ -68,7 +62,7 @@ def display_multiple_images(
         titles (List[str]): list of image labels if any
         fontsize (int): fontsize of outfit titles
         axes_pad (float): # pad between axes in inch
-        line_length (int): # words in a line for title
+        num_lines (int): # lines display in each title
         sep (str): separator between words of title
     """
     fig = plt.figure(figsize=(fig_size, fig_size))
@@ -102,7 +96,7 @@ def display_multiple_images(
 
         if titles:
             title = split_text_into_lines(
-                titles[i], sep=sep, num_word_one_line=line_length
+                titles[i], num_lines=num_lines
             )
             ax.set_title(title, fontsize=fontsize)
 
