@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import base64
 from io import BytesIO
-from typing import Any, List
+from typing import Any, List, Tuple
 import shutil
 
 from tqdm import tqdm
@@ -40,6 +40,45 @@ def load_image(
             image = np.array(image)
 
     return image
+
+
+def resize_image(image, base_width=None, base_height=None):
+    if base_height and base_width:
+        image = image.resize((base_width, base_height), Image.Resampling.LANCZOS)
+    elif base_width:
+        wpercent = (base_width / float(image.size[0]))
+        hsize = int((float(image.size[1]) * float(wpercent)))
+        image = image.resize((base_width, hsize), Image.Resampling.LANCZOS)
+    elif base_height:
+        hpercent = (base_height / float(image.size[1]))
+        wsize = int((float(image.size[0]) * float(hpercent)))
+        image = image.resize((wsize, base_height), Image.Resampling.LANCZOS)
+        
+    return image
+
+
+def expand2square(
+        pil_img,
+        background_color: Tuple = (255, 255, 255)
+):
+    """
+    From https://note.nkmk.me/en/python-pillow-add-margin-expand-canvas/
+
+    Add padding to the short side to 
+    make the image square while maintaining 
+    the aspect ratio of the rectangular image.
+    """
+    width, height = pil_img.size
+    if width == height:
+        return pil_img
+    elif width > height:
+        result = Image.new(pil_img.mode, (width, width), background_color)
+        result.paste(pil_img, (0, (width - height) // 2))
+        return result
+    else:
+        result = Image.new(pil_img.mode, (height, height), background_color)
+        result.paste(pil_img, ((height - width) // 2, 0))
+        return result
 
 
 def base64_to_image(base64_string: str) -> Image:
