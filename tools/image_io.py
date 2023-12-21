@@ -57,8 +57,34 @@ def resize_image(image, base_width=None, base_height=None):
     return image
 
 
-def expand2square(
-        pil_img,
+def expand2square_cv2(
+        img,
+        fill=255
+):
+    """
+    From https://note.nkmk.me/en/python-pillow-add-margin-expand-canvas/
+
+    Add padding to the short side to 
+    make the image square while maintaining 
+    the aspect ratio of the rectangular image.
+    """
+    height, width, _ = img.shape
+    if width == height:
+        return img
+    elif width > height:
+        result = np.full((width, width, 3), fill)
+        pad_margin = int((width - height) // 2)
+        result[pad_margin:-pad_margin, :, :] = img
+        return result
+    else:
+        result = np.full((height, height, 3), fill)
+        pad_margin = int((height - width) // 2)
+        result[:, pad_margin:-pad_margin, :] = img
+        return result
+
+
+def expand2square_pil(
+        img,
         background_color: Tuple = (255, 255, 255)
 ):
     """
@@ -68,16 +94,16 @@ def expand2square(
     make the image square while maintaining 
     the aspect ratio of the rectangular image.
     """
-    width, height = pil_img.size
+    width, height = img.size
     if width == height:
-        return pil_img
+        return img
     elif width > height:
-        result = Image.new(pil_img.mode, (width, width), background_color)
-        result.paste(pil_img, (0, (width - height) // 2))
+        result = Image.new(img.mode, (width, width), background_color)
+        result.paste(img, (0, (width - height) // 2))
         return result
     else:
-        result = Image.new(pil_img.mode, (height, height), background_color)
-        result.paste(pil_img, ((height - width) // 2, 0))
+        result = Image.new(img.mode, (height, height), background_color)
+        result.paste(img, ((height - width) // 2, 0))
         return result
 
 
