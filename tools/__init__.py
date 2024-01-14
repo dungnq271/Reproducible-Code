@@ -1,3 +1,3 @@
-from .image_io import *
+from .image_utils import *
 from .plot import *
 from .io import *

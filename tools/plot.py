@@ -11,7 +11,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import seaborn as sns
 import pandas as pd
 
-from .image_io import load_image
+from .image_utils import load_image
 from icecream import ic
 
 sns.set_theme(style="white")
@@ -47,8 +47,8 @@ def display_multiple_images(
     fig_size: int = 24,
     img_size: int = 512,
     titles: List[str] = None,
-    fontsize: int = 10,
-    axes_pad: float = 0.3,
+    fontsize: int = 24,
+    axes_pad: float = 0.5,
     num_lines: int = 3,
     sep: str = " ",
 ) -> None:
@@ -106,8 +106,8 @@ def display_multiple_images(
 def plot_attribute_frequency(
     data: Union[List, Dict, pd.DataFrame],
     field: str,
-    width: int,
-    height: int,
+    width: int = 5,
+    height: int = 5,
     idx_ranges: List[int] = None,
     bar_label: bool = True,
 ):
