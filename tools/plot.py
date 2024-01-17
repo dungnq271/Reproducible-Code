@@ -101,6 +101,7 @@ def display_multiple_images(
             ax.set_title(title, fontsize=fontsize)
 
     plt.show()
+    return ax
 
 
 def plot_attribute_frequency(
@@ -144,4 +145,4 @@ def plot_attribute_frequency(
     if bar_label:
         ax.bar_label(ax.containers[0], fontsize=10)
 
-    return freqs
+    return ax, freqs
