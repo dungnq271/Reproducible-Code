@@ -123,6 +123,7 @@ def plot_attribute_frequency(
        bar_label (bool): whether to display bar label
     """
     freqs = data
+    ax = None
 
     if isinstance(data, list):
         data = pd.DataFrame(data, columns=[field])
